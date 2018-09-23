@@ -1,10 +1,9 @@
 module IIIFManifest
   class DisplayMesh
     attr_reader :url, :iiif_endpoint, :format
-    def initialize(url, format: nil, iiif_endpoint: nil)
+    def initialize(url, format: nil)
       @url = url
       @format = format
-      @iiif_endpoint = iiif_endpoint
     end
   end
 end
