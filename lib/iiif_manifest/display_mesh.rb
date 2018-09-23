@@ -1,5 +1,5 @@
 module IIIFManifest
-  class DisplayMesh3D
+  class DisplayMesh
     attr_reader :url, :iiif_endpoint, :format
     def initialize(url, format: nil, iiif_endpoint: nil)
       @url = url
