@@ -9,6 +9,7 @@ module IIIFManifest
   autoload :ManifestFactory
   autoload :ManifestServiceLocator
   autoload :DisplayImage
+  autoload :DisplayMesh3D
   autoload :IIIFCollection
   autoload :IIIFEndpoint
   autoload :V3
