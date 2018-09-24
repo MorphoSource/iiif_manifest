@@ -23,7 +23,8 @@ module IIIFManifest
             body['height'] = display_content.height if display_content.try(:height)
             body['width'] = display_content.width if display_content.try(:width)
             body['duration'] = display_content.duration if display_content.try(:duration)
-            body['format'] = display_content.format if display_content.format
+            # body['format'] = display_content.format if display_content.format
+            body['format'] = display_content.format
             body['label'] = ManifestBuilder.language_map(display_content.label) if display_content.try(:label)
           end
 
