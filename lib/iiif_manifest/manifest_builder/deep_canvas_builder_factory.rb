@@ -4,7 +4,10 @@ module IIIFManifest
       private
 
         def file_set_presenters(work)
-          DeepFileSetEnumerator.new(work).to_a
+          # Use FileSetManager to:
+            # Omit file sets from child works
+            # Limit file sets by format
+          FileSetManager.new(work).results
         end
     end
 

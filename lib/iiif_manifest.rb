@@ -13,4 +13,7 @@ module IIIFManifest
   autoload :IIIFCollection
   autoload :IIIFEndpoint
   autoload :V3
+
+  # limit which file sets get included in the work manifest
+  autoload :FileSetManager
 end
