@@ -22,8 +22,9 @@ module IIIFManifest
           attach_image if display_image
           # Presentation 3.0 approach
           attach_content if display_content
-          # Experimental MS change
+          # Experimental MS changes
           attach_mesh if display_mesh
+          attach_volume if display_volume
         end
 
         def canvas
@@ -51,6 +52,10 @@ module IIIFManifest
             record.display_mesh if record.respond_to?(:display_mesh)
           end
 
+          def display_volume
+            record.display_volume if record.respond_to?(:display_volume)
+          end
+
           def display_content
             Array.wrap(record.display_content) if record.respond_to?(:display_content)
           end
@@ -72,6 +77,10 @@ module IIIFManifest
 
           def attach_mesh
             content_builder.new(display_mesh).apply(canvas)
+          end
+
+          def attach_volume
+            content_builder.new(display_volume).apply(canvas)
           end
 
           def attach_content

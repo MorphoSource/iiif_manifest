@@ -14,9 +14,7 @@ module IIIFManifest
       def results
         # Return first file set presenter of matching mime types
         return first_presenter(:mesh?) if media_type_is?('Mesh')
-
-        # TODO: this will need to be updated when display Volume is added
-        # return first_presenter(:archive?) if media_type_is?('CTImageSeries')
+        return first_presenter(:volume?) if media_type_is?('CTImageSeries')
 
         # Return all file set presenters of matching mime types
         return all_presenters(:image?) if media_type_is?('Image')
