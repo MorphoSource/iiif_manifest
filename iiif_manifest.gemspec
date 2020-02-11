@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Generate IIIF presentation manifests for Hydra::Works'
   spec.description   = 'IIIF http://iiif.io/ defines an API for presenting related images in a viewer. This transforms Hydra::Works objects into that format usable by players such as http://universalviewer.io/'
-  spec.homepage      = 'http://github.com/projecthydra-labs/iiif_manifest'
+  spec.homepage      = 'https://github.com/samvera/iiif_manifest'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = 'exe'
@@ -20,10 +20,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport', '>= 4'
 
   spec.add_development_dependency 'bixby', '~> 1.0'
-  spec.add_development_dependency 'bundler', '~> 1.11'
+  spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'pry-byebug'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'rubocop-rspec'
   spec.add_development_dependency 'byebug'

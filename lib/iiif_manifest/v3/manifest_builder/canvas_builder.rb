@@ -33,7 +33,7 @@ module IIIFManifest
 
         def path
           path = "#{parent.manifest_url}/canvas/#{record.id}"
-          path << "##{record.media_fragment}" if record.respond_to?(:media_fragment)
+          path << "##{record.media_fragment}" if record.respond_to?(:media_fragment) && record.media_fragment.present?
           path
         end
 
@@ -61,7 +61,7 @@ module IIIFManifest
           end
 
           def display_content
-            Array.wrap(record.display_content) if record.respond_to?(:display_content)
+            Array.wrap(record.display_content) if record.respond_to?(:display_content) && record.display_content.present?
           end
 
           def apply_record_properties
