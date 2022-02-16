@@ -22,9 +22,6 @@ module IIIFManifest
           attach_image if display_image
           # Presentation 3.0 approach
           attach_content if display_content
-          # Experimental MS changes
-          attach_mesh if display_mesh 
-          attach_volume if display_volume
         end
 
         def canvas
@@ -44,24 +41,12 @@ module IIIFManifest
 
         private
 
-          def media_type_is?(type)
-            parent.media_type.first == type
-          end
-
           def display_image
-            record.display_image if record.respond_to?(:display_image)
-          end
-
-          def display_mesh
-            record.display_mesh if ( record.respond_to?(:display_mesh) && media_type_is?('Mesh') ) 
-          end
-
-          def display_volume
-            record.display_volume if ( record.respond_to?(:display_volume) && media_type_is?('CTImageSeries') )
+            record.display_image if record.respond_to?(:display_image) && record.display_image.present?
           end
 
           def display_content
-            Array.wrap(record.display_content) if record.respond_to?(:display_content)
+            Array.wrap(record.display_content) if record.respond_to?(:display_content) && record.display_content.present?
           end
 
           def apply_record_properties
