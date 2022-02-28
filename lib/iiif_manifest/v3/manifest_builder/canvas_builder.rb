@@ -42,11 +42,11 @@ module IIIFManifest
         private
 
           def display_image
-            record.display_image if record.respond_to?(:display_image) && record.display_image.present?
+            record.display_image if ( record.respond_to?(:display_image) && record.display_image.present? )
           end
 
           def display_content
-            Array.wrap(record.display_content) if record.respond_to?(:display_content) && record.display_content.present?
+            Array.wrap(record.display_content) if ( record.respond_to?(:display_content) && record.display_content.present? )
           end
 
           def apply_record_properties
