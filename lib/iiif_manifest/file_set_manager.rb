@@ -3,6 +3,13 @@ module IIIFManifest
 
       attr_reader :work
 
+      PRESENTER_TYPES = {
+        'Mesh' => 'mesh',
+        'CTImageSeries' => 'volume',
+        'Image' => 'image',
+        'Video' => 'video'
+      }
+
       def initialize(work)
         @work = work
       end
@@ -12,22 +19,18 @@ module IIIFManifest
       end
 
       def results
-        # Return first file set presenter of matching mime types
-        return first_presenter(:mesh?) if media_type_is?('Mesh')
-        return first_presenter(:volume?) if media_type_is?('CTImageSeries')
-        return first_presenter(:image?) if media_type_is?('Image')
-        return first_presenter(:video?) if media_type_is?('Video')
+        return [] unless media_type = @work.media_type&.first
 
-        # Don't return any presenters if media type is photogrammetry or other
-        []
+        type = "#{PRESENTER_TYPES[media_type]}?".to_sym # convert 'mesh' to :mesh?
+        first_presenter(type).compact
       end
 
       def first_presenter(type)
-        [file_set_presenters.find{ |presenter| presenter.send(type) }]
+        [file_set_presenters.find{ |presenter| presenter.try(type) }]
       end
 
       def all_presenters(type)
-        file_set_presenters.select{ |presenter| presenter.send(type) }
+        file_set_presenters.select{ |presenter| presenter.try(type) }
       end
 
       def media_type_is?(type)
