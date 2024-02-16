@@ -26,11 +26,11 @@ module IIIFManifest
       end
 
       def first_presenter(type)
-        [file_set_presenters.find{ |presenter| presenter.send(type) }]
+        [file_set_presenters.find{ |presenter| presenter.try(type) }]
       end
 
       def all_presenters(type)
-        file_set_presenters.select{ |presenter| presenter.send(type) }
+        file_set_presenters.select{ |presenter| presenter.try(type) }
       end
 
       def media_type_is?(type)
