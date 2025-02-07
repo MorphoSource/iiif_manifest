@@ -1,5 +1,6 @@
 require_relative 'manifest_builder/container_builder_factory'
 require_relative 'manifest_builder/iiif_service'
+require_relative 'manifest_builder/content_builder'
 require_relative 'manifest_builder/scene_builder'
 
 module IIIFManifest

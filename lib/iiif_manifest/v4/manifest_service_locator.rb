@@ -34,8 +34,56 @@ module IIIFManifest
           )
         end
 
+        def content_builder
+          IIIFManifest::ManifestServiceLocator::InjectedFactory.new(
+            ManifestBuilder::ContentBuilder,
+            iiif_annotation_factory: iiif_annotation_factory,
+            body_builder_factory: body_builder_factory
+          )
+        end
+
+        def iiif_service_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFService
+        end
+
+        def iiif_body_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::Body
+        end
+
+        def iiif_choice_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::Choice
+        end
+
+        def iiif_annotation_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::Annotation
+        end
+
+        def iiif_annotation_page_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::AnnotationPage
+        end
+
+        def iiif_manifest_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest
+        end
+
+        def iiif_canvas_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::Canvas
+        end
+
         def iiif_scene_factory
           IIIFManifest::V4::ManifestBuilder::IIIFManifest::Scene
+        end
+
+        def iiif_range_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::Range
+        end
+
+        def iiif_search_service_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::SearchService
+        end
+
+        def iiif_autocomplete_service_factory
+          IIIFManifest::V4::ManifestBuilder::IIIFManifest::AutocompleteService
         end
       end
     end
