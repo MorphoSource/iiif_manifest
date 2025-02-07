@@ -72,7 +72,7 @@ module IIIFManifest
           {
             '@context' => [
               'http://www.w3.org/ns/anno.jsonld',
-              'http://iiif.io/api/presentation/3/context.json'
+              'http://iiif.io/api/presentation/4/context.json'
             ],
             'type' => 'Manifest'
           }
@@ -83,7 +83,7 @@ module IIIFManifest
             {
               '@context' => [
                 'http://www.w3.org/ns/anno.jsonld',
-                'http://iiif.io/api/presentation/3/context.json'
+                'http://iiif.io/api/presentation/4/context.json'
               ],
               'type' => 'Collection'
             }
