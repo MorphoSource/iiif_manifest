@@ -1,0 +1,12 @@
+require 'active_support'
+require 'active_support/core_ext/module'
+require 'active_support/core_ext/object'
+
+module IIIFManifest
+  module V4
+    extend ActiveSupport::Autoload
+    autoload :ManifestBuilder
+    autoload :ManifestFactory
+    autoload :ManifestServiceLocator
+  end
+end
