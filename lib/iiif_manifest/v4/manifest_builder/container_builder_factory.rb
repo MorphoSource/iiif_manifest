@@ -18,23 +18,23 @@ module IIIFManifest
         def from(work)
           composite_builder.new(
             *file_set_presenters(work).map do |presenter|
-              container_builder_factory_for(work).new(presenter, work)
+              container_builder_factory_for(presenter).new(presenter, work)
             end
           )
         end
 
         private
 
-        def container_builder_factory_for(work)
-          case container_type(work)
+        def container_builder_factory_for(presenter)
+          case container_type(presenter)
           when :scene then scene_builder_factory
           else             canvas_builder_factory
           end
         end
 
-        def container_type(work)
-          if work.respond_to?(:container_type) && CONTAINER_TYPES.include?(work.container_type)
-            work.container_type
+        def container_type(presenter)
+          if presenter.respond_to?(:container_type) && CONTAINER_TYPES.include?(presenter.container_type)
+            presenter.container_type
           else
             :canvas
           end
