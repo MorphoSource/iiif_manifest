@@ -11,6 +11,9 @@ module IIIFManifest
         end
 
         def apply(container)
+          # Assume first item in container is an annotation page
+          annotation_page = container.items.first
+          annotation['id'] = "#{annotation_page['id']}/annotation/#{annotation_page.items.length}"
           annotation['target'] = container['id']
 
           # different container types have different required properties
@@ -24,8 +27,7 @@ module IIIFManifest
             container['duration'] = annotation.body['duration']
           end
 
-          # Assume first item in container is an annotation page
-          container.items.first.items += [annotation]
+          annotation_page.items += [annotation]
         end
 
         private

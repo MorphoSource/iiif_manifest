@@ -98,7 +98,7 @@ module IIIFManifest
           end
         end
 
-        class Canvas < IIIFService
+        class Container < IIIFService
           def label
             inner_hash['label']
           end
@@ -115,6 +115,16 @@ module IIIFManifest
             inner_hash['items'] = items
           end
 
+          def annotations
+            inner_hash['annotations'] ||= []
+          end
+  
+          def annotations=(annotations)
+            inner_hash['annotations'] = annotations
+          end
+        end
+
+        class Canvas < Container
           def initial_attributes
             {
               'type' => 'Canvas'
@@ -122,23 +132,7 @@ module IIIFManifest
           end
         end
 
-        class Scene < IIIFService
-          def label
-            inner_hash['label']
-          end
-
-          def label=(label)
-            inner_hash['label'] = label
-          end
-
-          def items
-            inner_hash['items'] ||= []
-          end
-
-          def items=(items)
-            inner_hash['items'] = items
-          end
-
+        class Scene < Container
           def initial_attributes
             {
               'type' => 'Scene'
@@ -214,7 +208,8 @@ module IIIFManifest
           def initial_attributes
             {
               'type' => 'Annotation',
-              'motivation' => 'painting'
+              'id' => nil,
+              'motivation' => ['painting']
             }
           end
         end

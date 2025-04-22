@@ -190,7 +190,7 @@ module IIIFManifest
           def initial_attributes
             {
               'type' => 'Annotation',
-              'motivation' => 'painting'
+              'motivation' => ['painting']
             }
           end
         end
