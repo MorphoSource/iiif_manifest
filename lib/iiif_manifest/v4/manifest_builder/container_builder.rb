@@ -6,47 +6,47 @@ module IIIFManifest
         attr_reader :record, :parent, :iiif_container_factory, :content_builder,
                     :choice_builder, :iiif_annotation_page_factory
         
-                    def initialize(record,
-                      parent,
-                      iiif_container_factory:,
-                      content_builder:,
-                      choice_builder:,
-                      iiif_annotation_page_factory:)
-         @record = record
-         @parent = parent
-         @iiif_container_factory = iiif_container_factory
-         @content_builder = content_builder
-         @choice_builder = choice_builder
-         @iiif_annotation_page_factory = iiif_annotation_page_factory
-         apply_record_properties
-         # Presentation 2.x approach
-         attach_image if display_image
-         # Presentation 3.0 approach
-         attach_content if display_content
-         # Commenting annotations
-         attach_comments if display_comments
-       end
+        def initialize(record,
+                       parent,
+                       iiif_container_factory:,
+                       content_builder:,
+                       choice_builder:,
+                       iiif_annotation_page_factory:)
+          @record = record
+          @parent = parent
+          @iiif_container_factory = iiif_container_factory
+          @content_builder = content_builder
+          @choice_builder = choice_builder
+          @iiif_annotation_page_factory = iiif_annotation_page_factory
+          apply_record_properties
+          # Presentation 2.x approach
+          attach_image if display_image
+          # Presentation 3.0 approach
+          attach_content if display_content
+          # Commenting annotations
+          attach_comments if display_comments
+        end
 
-       def container
-         @container ||= iiif_container_factory.new
-       end
+        def container
+          @container ||= iiif_container_factory.new
+        end
 
-       def container_type
-        container['type'] || 'Canvas'
-       end
+        def container_type
+         container['type'] || 'Canvas'
+        end
 
-       def path
-         path = "#{parent.manifest_url}/#{container_type.downcase}/#{record.id}"
-         path << "##{record.media_fragment}" if record.respond_to?(:media_fragment)
-         path
-       end
+        def path
+          path = "#{parent.manifest_url}/#{container_type.downcase}/#{record.id}"
+          path << "##{record.media_fragment}" if record.respond_to?(:media_fragment)
+          path
+        end
 
-       def apply(items)
-         return items if container.items.blank?
-         items << container
-       end
+        def apply(items)
+          return items if container.items.blank?
+          items << container
+        end
 
-       private
+        private
 
           def display_image
             record.display_image if ( record.respond_to?(:display_image) && record.display_image.present? )

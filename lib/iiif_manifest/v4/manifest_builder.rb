@@ -6,7 +6,6 @@ require_relative 'manifest_builder/scene_builder'
 require_relative 'manifest_builder/content_builder'
 require_relative 'manifest_builder/body_builder'
 
-
 module IIIFManifest
   module V4
     class ManifestBuilder

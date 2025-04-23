@@ -13,7 +13,6 @@ module IIIFManifest
         @iiif_endpoint = iiif_endpoint
         @transform = transform
       end
-
     end
   end
 end
