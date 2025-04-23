@@ -24,10 +24,20 @@ module IIIFManifest
           )
         end
 
+        def canvas_builder
+          IIIFManifest::ManifestServiceLocator::InjectedFactory.new(
+            ManifestBuilder::CanvasBuilder,
+            iiif_container_factory: iiif_canvas_factory,
+            content_builder: content_builder,
+            choice_builder: choice_builder,
+            iiif_annotation_page_factory: iiif_annotation_page_factory
+          )
+        end
+
         def scene_builder
           IIIFManifest::ManifestServiceLocator::InjectedFactory.new(
             ManifestBuilder::SceneBuilder,
-            iiif_scene_factory: iiif_scene_factory,
+            iiif_container_factory: iiif_scene_factory,
             content_builder: content_builder,
             choice_builder: choice_builder,
             iiif_annotation_page_factory: iiif_annotation_page_factory
@@ -39,6 +49,14 @@ module IIIFManifest
             ManifestBuilder::ContentBuilder,
             iiif_annotation_factory: iiif_annotation_factory,
             body_builder_factory: body_builder_factory
+          )
+        end
+
+        def body_builder_factory
+          IIIFManifest::ManifestServiceLocator::InjectedFactory.new(
+            ManifestBuilder::BodyBuilder,
+            iiif_body_factory: iiif_body_factory,
+            image_service_builder_factory: image_service_builder_factory
           )
         end
 

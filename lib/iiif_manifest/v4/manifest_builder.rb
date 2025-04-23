@@ -1,7 +1,10 @@
 require_relative 'manifest_builder/container_builder_factory'
 require_relative 'manifest_builder/iiif_service'
-require_relative 'manifest_builder/content_builder'
+require_relative 'manifest_builder/container_builder'
+require_relative 'manifest_builder/canvas_builder'
 require_relative 'manifest_builder/scene_builder'
+require_relative 'manifest_builder/content_builder'
+require_relative 'manifest_builder/body_builder'
 
 module IIIFManifest
   module V4
