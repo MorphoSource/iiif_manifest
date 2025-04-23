@@ -36,7 +36,7 @@ module IIIFManifest
        end
 
        def path
-         path = "#{parent.manifest_url}/#{container_type}/#{record.id}"
+         path = "#{parent.manifest_url}/#{container_type.downcase}/#{record.id}"
          path << "##{record.media_fragment}" if record.respond_to?(:media_fragment)
          path
        end
@@ -92,7 +92,55 @@ module IIIFManifest
           end
 
           def attach_comments
-            container.annotations = record.display_comments
+            comments = Array.wrap(record.display_comments).map do |comment|
+              # Add container ID to content resource or SpecificResource target
+              attach_target_id(comment)
+
+              # If scope resource is present, add container ID to scope resource target
+              if comment.dig('target', 'type') == 'SpecificResource' && comment.dig('target', 'scope').present?
+                scope = comment['target']['scope']
+
+                attach_target_id(scope)
+
+                if scope.dig('target', 'items').present? 
+                  scope['target']['items'] = Array.wrap(scope['target']['items']).map do |item|
+                    item.is_a?(Hash) ? attach_target_id(item) : item
+                  end
+                end
+              end
+
+              comment
+            end
+
+            comments_annotation_page = iiif_annotation_page_factory.new
+            comments_annotation_page['id'] = "#{path}/annotation_page/#{comments_annotation_page.index}"
+            comments_annotation_page.items = comments
+            container.annotations = [comments_annotation_page]
+          end
+
+          # For content resources (including SpecificResource), add container ID to target
+          def attach_target_id(content_resource)
+            return content_resource unless content_resource.is_a?(Hash)
+
+            if (
+              content_resource.dig('target', 'type') == container_type && 
+              content_resource.dig('target', 'id').blank?
+            )
+              content_resource['target']['id'] = container['id']
+            elsif (
+              content_resource.dig('target', 'type') == 'SpecificResource' && 
+              content_resource.dig('target', 'source').present?
+            )
+              content_resource['target']['source'] = Array.wrap(content_resource['target']['source']).map do |source|
+                if source.is_a?(Hash) && source['type'] == container_type && source['id'].blank?
+                  source['id'] = container['id']
+                end
+
+                source
+              end
+            end
+
+            content_resource
           end
       end
     end
