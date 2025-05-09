@@ -93,17 +93,30 @@ module IIIFManifest
 
           def attach_comments
             comments = Array.wrap(record.display_comments).map do |comment|
-              # Add container ID to content resource or SpecificResource target
+              # Add annotation ID to comment content resource or SpecificResource target
               attach_target_id(comment)
 
-              # If scope resource is present, add container ID to scope resource target
               if comment.dig('target', 'type') == 'SpecificResource' && comment.dig('target', 'scope').present?
                 scope = comment['target']['scope']
 
+                # Attach container ID to scope's target
                 attach_target_id(scope)
 
                 if scope.dig('target', 'items').present? 
                   scope['target']['items'] = Array.wrap(scope['target']['items']).map do |item|
+                    # Special non-target case: some item bodies have lookAt property specific resource
+                    # Attach annotation ID to lookAt specific resource source
+                    if (
+                      item.dig('body', 'lookAt').present? && 
+                      item.dig('body', 'lookAt', 'type') == 'SpecificResource' &&
+                      item.dig('body', 'lookAt', 'source').present?
+                    )
+                      item['body']['lookAt']['source'] = Array.wrap(item['body']['lookAt']['source']).map do |source|
+                        source.is_a?(Hash) ? attach_container_or_annotation_id(source) : source
+                      end
+                    end
+
+                    # Attach annotation ID to item's target
                     item.is_a?(Hash) ? attach_target_id(item) : item
                   end
                 end
@@ -122,25 +135,31 @@ module IIIFManifest
           def attach_target_id(content_resource)
             return content_resource unless content_resource.is_a?(Hash)
 
+            if content_resource.dig('target')
+              content_resource['target'] = attach_container_or_annotation_id(content_resource['target'])
+            end
+
             if (
-              content_resource.dig('target', 'type') == container_type && 
-              content_resource.dig('target', 'id').blank?
-            )
-              content_resource['target']['id'] = container['id']
-            elsif (
               content_resource.dig('target', 'type') == 'SpecificResource' && 
               content_resource.dig('target', 'source').present?
             )
               content_resource['target']['source'] = Array.wrap(content_resource['target']['source']).map do |source|
-                if source.is_a?(Hash) && source['type'] == container_type && source['id'].blank?
-                  source['id'] = container['id']
-                end
-
-                source
+                source.is_a?(Hash) ? attach_container_or_annotation_id(source) : source
               end
             end
 
             content_resource
+          end
+
+          def attach_container_or_annotation_id(hash_like)
+            if hash_like && hash_like['type'] == container_type && hash_like['id'].blank?
+              # Attach ID of current container
+              hash_like['id'] = container['id']
+            else hash_like && hash_like['type'] == 'Annotation' && hash_like['id'].blank?
+              # Attach ID of current annotation page's first painting annotation
+              hash_like['id'] = annotation_page&.items&.first['id'] if annotation_page&.items.present?
+            end
+            hash_like
           end
       end
     end
