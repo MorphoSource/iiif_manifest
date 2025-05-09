@@ -135,10 +135,6 @@ module IIIFManifest
           def attach_target_id(content_resource)
             return content_resource unless content_resource.is_a?(Hash)
 
-            if content_resource.dig('target')
-              content_resource['target'] = attach_container_or_annotation_id(content_resource['target'])
-            end
-
             if (
               content_resource.dig('target', 'type') == 'SpecificResource' && 
               content_resource.dig('target', 'source').present?
@@ -146,6 +142,8 @@ module IIIFManifest
               content_resource['target']['source'] = Array.wrap(content_resource['target']['source']).map do |source|
                 source.is_a?(Hash) ? attach_container_or_annotation_id(source) : source
               end
+            elsif content_resource.dig('target')
+              content_resource['target'] = attach_container_or_annotation_id(content_resource['target'])
             end
 
             content_resource
