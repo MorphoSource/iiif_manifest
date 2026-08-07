@@ -9,7 +9,7 @@ module IIIFManifest
             if display_content.respond_to?(:transform) && display_content.transform.present?
               # If the display content has a transform, we need to create a SpecificResource
               body['type'] = 'SpecificResource'
-              body['source'] = [apply_body_properties({})]
+              body['source'] = apply_body_properties({})
               body['transform'] = display_content.transform
             else
               apply_body_properties(body)

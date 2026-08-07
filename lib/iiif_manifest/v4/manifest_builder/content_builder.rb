@@ -14,7 +14,7 @@ module IIIFManifest
           # Assume first item in container is an annotation page
           annotation_page = container.items.first
           annotation['id'] = "#{annotation_page['id']}/annotation/#{annotation_page.items.length}"
-          annotation['target'] = container['id']
+          annotation['target'] = { 'id' => container['id'], 'type' => container['type'] }
 
           # different container types have different required properties
           if container['type'] == 'Canvas'

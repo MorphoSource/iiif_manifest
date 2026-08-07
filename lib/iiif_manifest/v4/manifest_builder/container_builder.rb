@@ -5,7 +5,7 @@ module IIIFManifest
       class ContainerBuilder
         attr_reader :record, :parent, :iiif_container_factory, :content_builder,
                     :choice_builder, :iiif_annotation_page_factory
-        
+
         def initialize(record,
                        parent,
                        iiif_container_factory:,
@@ -23,6 +23,8 @@ module IIIFManifest
           attach_image if display_image
           # Presentation 3.0 approach
           attach_content if display_content
+          # Camera annotations (painted into the scene alongside content, referenced by commenting annotations via scope)
+          attach_cameras if display_cameras
           # Commenting annotations
           attach_comments if display_comments
         end
@@ -60,6 +62,10 @@ module IIIFManifest
             Array.wrap(record.display_comments) if ( record.respond_to?(:display_comments) && record.display_comments.present? )
           end
 
+          def display_cameras
+            Array.wrap(record.display_cameras) if ( record.respond_to?(:display_cameras) && record.display_cameras.present? )
+          end
+
           def apply_record_properties
             container['id'] = path
             container.label = ManifestBuilder.language_map(record.to_s) if record.to_s.present?
@@ -93,36 +99,8 @@ module IIIFManifest
 
           def attach_comments
             comments = Array.wrap(record.display_comments).map do |comment|
-              # Add annotation ID to comment content resource or SpecificResource target
+              # Add container ID to comment's SpecificResource target
               attach_target_id(comment)
-
-              if comment.dig('target', 'type') == 'SpecificResource' && comment.dig('target', 'scope').present?
-                scope = comment['target']['scope']
-
-                # Attach container ID to scope's target
-                attach_target_id(scope)
-
-                if scope.dig('target', 'items').present? 
-                  scope['target']['items'] = Array.wrap(scope['target']['items']).map do |item|
-                    # Special non-target case: some item bodies have lookAt property specific resource
-                    # Attach annotation ID to lookAt specific resource source
-                    if (
-                      item.dig('body', 'lookAt').present? && 
-                      item.dig('body', 'lookAt', 'type') == 'SpecificResource' &&
-                      item.dig('body', 'lookAt', 'source').present?
-                    )
-                      item['body']['lookAt']['source'] = Array.wrap(item['body']['lookAt']['source']).map do |source|
-                        source.is_a?(Hash) ? attach_container_or_annotation_id(source) : source
-                      end
-                    end
-
-                    # Attach annotation ID to item's target
-                    item.is_a?(Hash) ? attach_target_id(item) : item
-                  end
-                end
-              end
-
-              comment
             end
 
             comments_annotation_page = iiif_annotation_page_factory.new
@@ -131,15 +109,29 @@ module IIIFManifest
             container.annotations = [comments_annotation_page]
           end
 
+          # Camera annotations are painted into the same annotation page as content
+          def attach_cameras
+            cameras = Array.wrap(record.display_cameras).map do |camera|
+              attach_target_id(camera)
+            end
+
+            annotation_page.items += cameras
+          end
+
           # For content resources (including SpecificResource), add container ID to target
           def attach_target_id(content_resource)
             return content_resource unless content_resource.is_a?(Hash)
 
             if (
-              content_resource.dig('target', 'type') == 'SpecificResource' && 
+              content_resource.dig('target', 'type') == 'SpecificResource' &&
               content_resource.dig('target', 'source').present?
             )
-              content_resource['target']['source'] = Array.wrap(content_resource['target']['source']).map do |source|
+              source = content_resource['target']['source']
+              # source is a single JSON object per the Presentation 4 spec, but preserve
+              # array shape if a caller supplied one rather than silently wrapping it.
+              content_resource['target']['source'] = if source.is_a?(Array)
+                source.map { |s| s.is_a?(Hash) ? attach_container_or_annotation_id(s) : s }
+              else
                 source.is_a?(Hash) ? attach_container_or_annotation_id(source) : source
               end
             elsif content_resource.dig('target')
